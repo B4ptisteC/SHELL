@@ -9,8 +9,6 @@
 #define HISTORY_FILE  "/tmp/.cmd_history"
 
 void history(char *cmd) {
-    // TODO: take the entire line instead of only the first argument
-
     const char *file = HISTORY_FILE;
 
     FILE *fptr = fopen(file, "a");
@@ -21,7 +19,6 @@ void history(char *cmd) {
 
     fclose(fptr);
 }
-
 
 void execute(char **args) {
     if (args[0] == NULL) return;
@@ -34,7 +31,26 @@ void execute(char **args) {
         }
         exit(1);
     } else {
-        history(args[0]);
+        if (args[1] != NULL) {
+            // not perfect but it works (the issue is that it only take 2 args max) / will fix this soon 
+
+
+            char *str;
+            size_t len = strlen(args[0]) + strlen(args[1]) + 2;
+
+            str = malloc(len);
+
+            strcpy(str, args[0]);
+            strcat(str, " ");
+            strcat(str, args[1]);
+
+            history(str);
+
+            free(str);
+        } else {
+            history(args[0]);
+        }
+        
         int status;
         waitpid(pid, &status, 0);
     }
@@ -89,8 +105,6 @@ int cmdExit(char **args) {
 }
 
 int editUname(char *uname) {
-    // this void will allow a users to edit their username. cmd: username
-
     FILE *configFile;
     configFile = fopen(CONFIG_SHELL, "r+");
 
@@ -193,7 +207,7 @@ int main(void) {
         if (strlen(line) == 0) continue;
 
         char **args = createTokens(line);
-
+        
         int result = run(args);
         if (result == -1) {
             execute(args);
