@@ -5,9 +5,13 @@
 #include <sys/wait.h>
 
 #define DELIMITERS " \t\r\n"
+#define CONFIG_SHELL "/tmp/.configShell"
+#define HISTORY_FILE  "/tmp/.cmd_history"
 
 void history(char *cmd) {
-    const char *file = "/tmp/.cmd_history";
+    // TODO: Keep the entire history (not just the history from the current run) - take the entire line instead of only the first argument - implement "history clear" cmd
+
+    const char *file = HISTORY_FILE;
 
     FILE *fptr = fopen(file, "a");
 
@@ -85,9 +89,9 @@ int editUname(char *uname) {
     // this void will allow a users to edit their username. cmd: username
 
     FILE *configFile;
-    configFile = fopen("/tmp/.configShell", "r+");
+    configFile = fopen(CONFIG_SHELL, "r+");
 
-    char line[1024];
+    char line[30];
 
     fgets(line, sizeof(line), configFile);
 
@@ -135,10 +139,10 @@ int main(void) {
     char line[1024];
 
     FILE *configFile;
-    configFile = fopen("/tmp/.configShell", "r");
+    configFile = fopen(CONFIG_SHELL, "r");
 
     if (configFile == NULL) {
-        configFile = fopen("/tmp/.configShell", "w+");
+        configFile = fopen(CONFIG_SHELL, "w+");
         editUname("user");
     }
 
