@@ -15,6 +15,7 @@ void history(char *cmd) {
     fclose(fptr);
 }
 
+
 void execute(char **args) {
     if (args[0] == NULL) return;
 
@@ -61,6 +62,8 @@ char **createTokens(char *line) {
     return tokens;
 }
 
+
+
 int cd(char **args) {
     char *home = getenv("HOME");
 
@@ -78,6 +81,31 @@ int cmdExit(char **args) {
     return 0;
 }
 
+int editUname(char *uname) {
+    // this func will allow a users to edit their username. cmd: username
+
+    FILE *configFile;
+    configFile = fopen("/tmp/.configShell", "r+");
+
+    char line[1024];
+
+    fgets(line, sizeof(line), configFile);
+
+    fseek(configFile, 0, SEEK_SET);
+
+    for (int i = 0; line[i] != '\n' && line[i] != '\0'; i++)
+        fputc('\0', configFile);
+
+
+    fseek(configFile, 0, SEEK_SET);
+
+    fprintf(configFile, "%s\n", uname);
+    fclose(configFile);
+
+    return 0;
+}
+
+
 int run(char **args) {
     if (args[0] == NULL) return 1;
 
@@ -89,14 +117,38 @@ int run(char **args) {
         return cmdExit(args);
     }
 
+    if (strcmp(args[0], "username") == 0) {
+
+        char uname[100];
+        printf("New username : ");
+        scanf("%s", uname);
+
+        return editUname(uname);
+    }
+
     return -1;
 }
 
 int main(void) {
     char line[1024];
 
+    FILE *configFile;
+    configFile = fopen("/tmp/.configShell", "r");
+
+    if (configFile == NULL) {
+        configFile = fopen("/tmp/.configShell", "w+");
+        editUname("user");
+    }
+
     char *home = getenv("HOME");
     chdir(home);
+
+    char uname[100];
+
+    fgets(uname, sizeof(uname), configFile);
+    uname[strcspn(uname, "\n")] = '\0';
+
+    fclose(configFile);
 
     int running = 1;
     while (running) {
@@ -104,9 +156,9 @@ int main(void) {
         char pwd[1024];
 
         if (getcwd(pwd, sizeof(pwd)) != NULL && strcmp(pwd, home) != 0) {
-            printf("b4ptiste@shell:%s$ ", pwd);
+            printf("\r%s@shell:%s$ ", uname, pwd);
         } else {
-            printf("b4ptiste@shell:~$ ");
+            printf("%s@shell:~$ ", uname);
         }
 
         fflush(stdout);
