@@ -27,7 +27,7 @@ void execute(char **args) {
 
     if (pid == 0) {
         if (execvp(args[0], args) == -1) {
-            perror("b4ptiste");
+            perror("execvp");
         }
         exit(1);
     } else {
