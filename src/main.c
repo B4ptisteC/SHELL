@@ -15,7 +15,10 @@ void history(char *cmd) {
 
     FILE *fptr = fopen(file, "a");
 
+    fseek(fptr, 0, SEEK_END);
+
     fprintf(fptr, "%s\n", cmd);
+
     fclose(fptr);
 }
 
@@ -27,7 +30,7 @@ void execute(char **args) {
 
     if (pid == 0) {
         if (execvp(args[0], args) == -1) {
-            perror("execvp");
+            perror("b4ptiste");
         }
         exit(1);
     } else {
@@ -114,15 +117,17 @@ int run(char **args) {
     if (args[0] == NULL) return 1;
 
     if (strcmp(args[0], "cd") == 0) {
+        history(args[0]);
         return cd(args);
     }
 
     if (strcmp(args[0], "exit") == 0) {
+        history(args[0]);
         return cmdExit(args);
     }
 
     if (strcmp(args[0], "username") == 0) {
-
+        history(args[0]);
         printf("\n\nNote: you'll need to restart the shell.\n");        
         
         char uname[100];
