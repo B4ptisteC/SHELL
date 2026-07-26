@@ -9,7 +9,7 @@
 #define HISTORY_FILE  "/tmp/.cmd_history"
 
 void history(char *cmd) {
-    // TODO: Keep the entire history (not just the history from the current run) - take the entire line instead of only the first argument - implement "history clear" cmd
+    // TODO: take the entire line instead of only the first argument
 
     const char *file = HISTORY_FILE;
 
@@ -112,6 +112,16 @@ int editUname(char *uname) {
     return 0;
 }
 
+int clearHistory() {
+    
+    if (remove(HISTORY_FILE) == 0) {
+        printf("\n\nHistory cleared.\n");
+    } else {
+        printf("Error : unable to clear the history.\n\n");
+    }
+
+    return 1;
+}
 
 int run(char **args) {
     if (args[0] == NULL) return 1;
@@ -135,6 +145,10 @@ int run(char **args) {
         scanf("%s", uname);
 
         return editUname(uname);
+    }
+
+    if (strcmp(args[0], "cls") == 0 && strcmp(args[1], "history") == 0) {
+        return clearHistory();
     }
 
     return -1;
