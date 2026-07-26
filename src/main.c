@@ -82,7 +82,7 @@ int cmdExit(char **args) {
 }
 
 int editUname(char *uname) {
-    // this func will allow a users to edit their username. cmd: username
+    // this void will allow a users to edit their username. cmd: username
 
     FILE *configFile;
     configFile = fopen("/tmp/.configShell", "r+");
@@ -119,6 +119,8 @@ int run(char **args) {
 
     if (strcmp(args[0], "username") == 0) {
 
+        printf("\n\nNote: you'll need to restart the shell.\n");        
+        
         char uname[100];
         printf("New username : ");
         scanf("%s", uname);
