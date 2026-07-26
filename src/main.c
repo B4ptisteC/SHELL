@@ -8,6 +8,16 @@
 #define CONFIG_SHELL "/tmp/.configShell"
 #define HISTORY_FILE  "/tmp/.cmd_history"
 
+#define BLK "\e[0;30m"
+#define RED "\e[0;31m"
+#define GRN "\e[0;32m"
+#define YEL "\e[0;33m"
+#define BLU "\e[0;34m"
+#define MAG "\e[0;35m"
+#define CYN "\e[0;36m"
+#define WHT "\e[0;37m"
+#define COLOR_RESET "\e[0m"
+
 void history(char *cmd) {
     const char *file = HISTORY_FILE;
 
@@ -32,7 +42,7 @@ void execute(char **args) {
         exit(1);
     } else {
         if (args[1] != NULL) {
-            // not perfect but it works (the issue is that it only take 2 args max) / will fix this soon 
+            // not perfect but it works (the issue is that it only take 2 args max)
 
 
             char *str;
@@ -190,15 +200,19 @@ int main(void) {
     fclose(configFile);
 
     int running = 1;
-    while (running) {
-    
-        char pwd[1024];
 
-        if (getcwd(pwd, sizeof(pwd)) != NULL && strcmp(pwd, home) != 0) {
-            printf("\r%s@shell:%s$ ", uname, pwd);
+    while (running) {
+        char shell[2048];
+        char pwd[1024];
+        getcwd(pwd, sizeof(pwd));
+
+        if (strcmp(pwd, home) == 0) {
+            snprintf(shell, sizeof(shell),"%s%s@shell~$ %s",GRN, uname, COLOR_RESET);
         } else {
-            printf("%s@shell:~$ ", uname);
+            snprintf(shell, sizeof(shell),"%s%s@shell:%s%s%s$ %s",GRN, uname, BLU, pwd, GRN, COLOR_RESET);
         }
+
+        printf("%s", shell);
 
         fflush(stdout);
 
