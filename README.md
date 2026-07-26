@@ -30,4 +30,4 @@ gcc -o main main.c
 
 ## ScreenShot
 
-<img width="699" height="289" alt="image" src="https://github.com/user-attachments/assets/15888db3-f020-4fae-947b-1838b6cce2b5" />
+<img width="878" height="507" alt="image" src="https://github.com/user-attachments/assets/fb624e90-a906-45af-b9df-3788e220529e" />
