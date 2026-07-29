@@ -30,6 +30,31 @@ void history(char *cmd) {
     fclose(fptr);
 }
 
+void banner() {
+    // it'll print the content of the banner config file into /tmp folder (in order to make it customizable..) - will prolly use the CONFIG_SHELL file..
+    
+}
+
+int help() {
+    printf("\n");
+
+    printf("%s%s Shell - Help%s\n", CYN, "==> ", COLOR_RESET);
+    printf("%sBuilt-in commands:%s\n\n", YEL, COLOR_RESET);
+
+    printf("  %s%-18s%s %sChange the current directory%s\n", GRN, "cd [directory]", COLOR_RESET, WHT, COLOR_RESET);
+    printf("  %s%-18s%s %sExit the shell%s\n", GRN, "exit", COLOR_RESET, WHT, COLOR_RESET);
+    printf("  %s%-18s%s %sDisplay this help message%s\n", GRN, "help", COLOR_RESET, WHT, COLOR_RESET);
+    printf("  %s%-18s%s %sChange the shell username%s\n", GRN, "username", COLOR_RESET, WHT, COLOR_RESET);
+    printf("  %s%-18s%s %sClear the command history%s\n", GRN, "cls history", COLOR_RESET, WHT, COLOR_RESET);
+    
+    printf("\n");
+    printf("%sOther commands:%s\n\n", YEL, COLOR_RESET);
+    printf("  Commands not listed above are executed using %sexecvp()%s.\n", MAG, COLOR_RESET);
+    printf("\n");
+
+    return 1;
+}
+
 void execute(char **args) {
     if (args[0] == NULL) return;
 
@@ -43,7 +68,6 @@ void execute(char **args) {
     } else {
         if (args[1] != NULL) {
             // not perfect but it works (the issue is that it only take 2 args max)
-
 
             char *str;
             size_t len = strlen(args[0]) + strlen(args[1]) + 2;
@@ -94,8 +118,6 @@ char **createTokens(char *line) {
     tokens[position] = NULL;
     return tokens;
 }
-
-
 
 int cd(char **args) {
     char *home = getenv("HOME");
@@ -158,6 +180,11 @@ int run(char **args) {
     if (strcmp(args[0], "exit") == 0) {
         history(args[0]);
         return cmdExit(args);
+    }
+    
+    if (strcmp(args[0], "help") == 0) {
+        history(args[0]);
+        return help();
     }
 
     if (strcmp(args[0], "username") == 0) {
