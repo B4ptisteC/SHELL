@@ -66,25 +66,31 @@ void execute(char **args) {
         }
         exit(1);
     } else {
-        if (args[1] != NULL) {
-            // not perfect but it works (the issue is that it only take 2 args max)
+        int argc = 0;
+        while (args[argc] != NULL) argc++;
 
-            char *str;
-            size_t len = strlen(args[0]) + strlen(args[1]) + 2;
+        if (argc > 1) {
+            size_t len = 1;
+            
+            for (int i = 0; i < argc; i++) {
+                len += strlen(args[i]);
+                if (i > 0) len += 1;
+            }
 
-            str = malloc(len);
+            char *str = malloc(len);
+            str[0] = '\0';
 
-            strcpy(str, args[0]);
-            strcat(str, " ");
-            strcat(str, args[1]);
+            for (int i = 0; i < argc; i++) {
+                strcat(str, args[i]);
+                if (i < argc - 1) strcat(str, " ");
+            }
 
             history(str);
-
             free(str);
         } else {
             history(args[0]);
         }
-        
+
         int status;
         waitpid(pid, &status, 0);
     }
