@@ -31,7 +31,7 @@ void history(char *cmd) {
 }
 
 void banner() {
-    
+
 }
 
 int help() {
@@ -43,9 +43,9 @@ int help() {
     printf("  %s%-18s%s %sChange the current directory%s\n", GRN, "cd [directory]", COLOR_RESET, WHT, COLOR_RESET);
     printf("  %s%-18s%s %sExit the shell%s\n", GRN, "exit", COLOR_RESET, WHT, COLOR_RESET);
     printf("  %s%-18s%s %sDisplay this help message%s\n", GRN, "help", COLOR_RESET, WHT, COLOR_RESET);
-    printf("  %s%-18s%s %sChange the shell username%s\n", GRN, "username", COLOR_RESET, WHT, COLOR_RESET);
+    printf("  %s%-18s%s %sChange the shell username%s\n", GRN, "username NEW_UNAME", COLOR_RESET, WHT, COLOR_RESET);
     printf("  %s%-18s%s %sClear the command history%s\n", GRN, "cls history", COLOR_RESET, WHT, COLOR_RESET);
-    
+
     printf("\n");
     printf("%sOther commands:%s\n\n", YEL, COLOR_RESET);
     printf("  Commands not listed above are executed using %sexecvp()%s.\n", MAG, COLOR_RESET);
@@ -160,7 +160,7 @@ int editUname(char *uname) {
     FILE *configFile;
     configFile = fopen(CONFIG_SHELL, "r+");
 
-    char line[30];
+    char line[150];
 
     fgets(line, sizeof(line), configFile);
 
@@ -168,7 +168,6 @@ int editUname(char *uname) {
 
     for (int i = 0; line[i] != '\n' && line[i] != '\0'; i++)
         fputc('\0', configFile);
-
 
     fseek(configFile, 0, SEEK_SET);
 
@@ -214,14 +213,21 @@ int run(char **args) {
 
 
     if (strcmp(args[0], "username") == 0) {
-        history(args[0]);
-        printf("\n\nNote: you'll need to restart the shell.\n");        
-        
-        char uname[100];
-        printf("New username : ");
-        scanf("%s", uname);
+        char uname[30];
 
-        return editUname(uname);
+        if (args[1] != NULL) {
+            printf("New Username %s", args[1]);
+            return editUname(args[1]);
+            
+        } else {
+            history(args[0]);
+            printf("\n\nNote: you'll need to restart the shell.\n");        
+            
+            printf("New username : ");
+            scanf("%s", uname);
+
+            return editUname(uname);
+        }
     }
 
     if (strcmp(args[0], "cls") == 0 && strcmp(args[1], "history") == 0) {
