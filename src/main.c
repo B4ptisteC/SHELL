@@ -31,7 +31,17 @@ void history(char *cmd) {
 }
 
 void banner() {
+    char str[255];
+    FILE *fp;
+    fp = fopen("/tmp/.banner","r");
 
+    while (fgets(str, sizeof(str),fp) != NULL){
+        printf("%s",str);
+    };
+
+    fclose(fp);
+
+    printf("\n");
 }
 
 int help() {
