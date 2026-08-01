@@ -240,7 +240,7 @@ int run(char **args) {
         }
     }
 
-    if (strcmp(args[0], "cls") == 0 && strcmp(args[1], "history") == 0) {
+    if (strcmp(args[0], "cls") == 0 && args[1] != NULL && strcmp(args[1], "history") == 0) {
         return clearHistory();
     }
 
