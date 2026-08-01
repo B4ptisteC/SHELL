@@ -31,7 +31,6 @@ void history(char *cmd) {
 }
 
 void banner() {
-    // it'll print the content of the banner config file into /tmp folder (in order to make it customizable..) - will prolly use the CONFIG_SHELL file..
     
 }
 
@@ -52,6 +51,21 @@ int help() {
     printf("  Commands not listed above are executed using %sexecvp()%s.\n", MAG, COLOR_RESET);
     printf("\n");
 
+    return 1;
+}
+
+int whoami() {
+    FILE *file = fopen("/tmp/.configShell", "r");
+
+    char line [30];
+
+    if (fgets(line, sizeof(line), file) != NULL) {
+        line[strcspn(line, "\n")] = '\0';
+
+        printf("%s\n", line);
+    }
+
+    fclose(file);
     return 1;
 }
 
@@ -193,6 +207,12 @@ int run(char **args) {
         return help();
     }
 
+    if (strcmp(args[0], "whoami") == 0) {
+        history(args[0]);
+        return whoami();
+    }
+
+
     if (strcmp(args[0], "username") == 0) {
         history(args[0]);
         printf("\n\nNote: you'll need to restart the shell.\n");        
@@ -212,6 +232,9 @@ int run(char **args) {
 }
 
 int main(void) {
+
+    banner();
+
     char line[1024];
 
     FILE *configFile;
