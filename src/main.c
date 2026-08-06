@@ -3,10 +3,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <dirent.h>
 
 #define DELIMITERS " \t\r\n"
 #define CONFIG_SHELL "/tmp/.configShell"
 #define HISTORY_FILE  "/tmp/.cmd_history"
+#define BANNER "/tmp/.banner"
 
 #define BLK "\e[0;30m"
 #define RED "\e[0;31m"
@@ -28,6 +30,25 @@ void history(char *cmd) {
     fprintf(fptr, "%s\n", cmd);
 
     fclose(fptr);
+}
+
+int listDir() {
+    struct dirent *entry;
+
+    DIR *dir;
+
+    char pwd[1024];
+    getcwd(pwd, sizeof(pwd));
+
+    dir = opendir(pwd);
+
+    while ((entry = readdir(dir)) != NULL) {
+        printf("%s ", entry->d_name);
+    }
+
+    printf("\n");
+    closedir(dir);
+    return 1;
 }
 
 void banner() {
@@ -221,6 +242,11 @@ int run(char **args) {
         return whoami();
     }
 
+    if (strcmp(args[0], "ls") == 0) {
+        history(args[0]);
+        return listDir();
+    }
+
 
     if (strcmp(args[0], "username") == 0) {
         char uname[30];
@@ -249,7 +275,12 @@ int run(char **args) {
 
 int main(void) {
 
-    banner();
+    FILE *bannerFile = fopen(BANNER, "r");
+
+    if (bannerFile) {
+        fclose(bannerFile);
+        banner();
+    }
 
     char line[1024];
 
